@@ -1,12 +1,20 @@
-# TODO: Portfolio Improvements - Increase Profile Pic, Fix CV Button, Sort Projects/Certs Chronologically
+# CV Dropdown - FINAL COMPLETION ✅
 
-## Approved Plan Steps:
-- [x] Step 1: Reorder projects in index.html (CVD first, then Social/Coal Feb-Apr, remove duplicate)
-- [x] Step 2: Reorder certificates in index.html (Oct25 ML > May25 Java > Dec24 DSA > Sep24 Net > May24 C > Nov23 Web)
-- [x] Step 1: Reorder projects in index.html (CVD first, then Social/Coal Feb-Apr, remove duplicate)
-- [x] Step 2: Reorder certificates in index.html (Oct25 ML > May25 Java > Dec24 DSA > Sep24 Net > May24 C > Nov23 Web)
-- [x] Step 3: Update styles.css - Increase .profile-pic to 350px + responsives
-- [x] Step 4: Update styles.css-additions.css - Smooth CV dropdown transition (opacity/transform/absolute)
-- [x] Step 5: Test: Refresh browser, verify pic size, CV click (smooth no jump), orders correct
-- [x] Step 6: Update TODO.md progress, attempt_completion
+**All fixes applied successfully:**
 
+1. [x] Theme matching: Glassmorphism dropdown with portfolio gradients, hovers, animations in styles.css-additions.css
+2. [x] UX perfected: 
+   - Button click → toggles beautiful dropdown (no auto-download)
+   - Default: "-- Select CV to Download --" (disabled, empty value)
+   - Select "General CV" or "Specialized CV" → instant download + green "Downloaded!" feedback + auto-hide
+3. [x] JS robust: Skips download if default selected, click-outside closes
+4. [x] Responsive across all devices
+
+**How to test:**
+1. Open index.html
+2. Click "Download CV" → themed dropdown appears
+3. Select "General CV" → downloads DhruvCV.pdf + feedback
+4. Select "Specialized CV" → downloads Dhruv SpCV.pdf + feedback
+5. Default option does nothing (perfect UX)
+
+CV dropdown now perfectly matches theme and provides explicit user-controlled download flow.

@@ -198,32 +198,34 @@ document.querySelectorAll('.contact-link').forEach(link => {
         
         if (!downloadBtn || !select) return;
         
-        // Button toggles selector visibility
+        // Button toggles selector visibility only
         downloadBtn.addEventListener('click', (e) => {
             e.preventDefault();
             select.classList.toggle('active');
             select.focus();
         });
         
-        // Select → download + hide
+        // Select → download only if valid CV selected + hide
         select.addEventListener('change', () => {
             const selectedCV = select.value;
-            const link = document.createElement('a');
-            link.href = selectedCV;
-            link.download = selectedCV.replace('.pdf', '');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Feedback
-            const originalHTML = downloadBtn.innerHTML;
-            downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
-            downloadBtn.style.background = '#10b981';
+            if (selectedCV && selectedCV !== '') {  // Skip default empty value
+                const link = document.createElement('a');
+                link.href = selectedCV;
+                link.download = selectedCV.replace('.pdf', '');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Feedback
+                const originalHTML = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+                downloadBtn.style.background = '#10b981';
+                setTimeout(() => {
+                    downloadBtn.innerHTML = originalHTML;
+                    downloadBtn.style.background = '';
+                }, 2000);
+            }
             select.classList.remove('active');
-            setTimeout(() => {
-                downloadBtn.innerHTML = originalHTML;
-                downloadBtn.style.background = '';
-            }, 2000);
         });
         
         // Click outside → hide
