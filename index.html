@@ -45,15 +45,10 @@
                     <div class="hero-buttons">
                         <a href="#projects" class="btn btn-primary">View My Work</a>
                         <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                        <div class="cv-selector">
-                            <a id="download-cv-btn" class="btn cv-download-btn" href="#">
-                                <i class="fas fa-download"></i> Download CV
+<div class="cv-selector">
+                            <a id="view-cv-btn" class="btn cv-view-btn" href="#" aria-label="View CV in modal">
+                                <i class="fas fa-eye"></i> View CV
                             </a>
-                            <select id="cv-type-select" class="cv-type-select">
-                                <option value="" selected disabled>-- Select CV --</option>
-                                <option value="DhruvCV.pdf">General CV</option>
-                                <option value="Dhruv SpCV.pdf">Specialized CV</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -454,6 +449,41 @@
     </section>
 
     <!-- Footer -->
+    <!-- CV Viewer Modal -->
+    <div id="cv-modal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title" tabindex="-1">
+        <div class="cv-modal-overlay" aria-label="Close modal">
+            <div class="cv-modal-content">
+                <div class="cv-modal-header">
+                    <h2 id="cv-modal-title" class="cv-modal-title">View CV</h2>
+                    <button id="cv-modal-close" class="cv-modal-close" aria-label="Close CV modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="cv-toggle-group">
+                    <input type="radio" id="cv-general" name="cv-choice" value="DhruvCV.pdf" checked>
+                    <label for="cv-general" class="cv-toggle-btn">
+                        <i class="fas fa-file-alt"></i> General CV
+                    </label>
+                    <input type="radio" id="cv-special" name="cv-choice" value="Dhruv SpCV.pdf">
+                    <label for="cv-special" class="cv-toggle-btn">
+                        <i class="fas fa-file-special"></i> Specialized CV
+                    </label>
+                </div>
+                <div class="cv-viewer-container">
+                    <iframe id="cv-viewer" class="cv-viewer-frame" title="CV Viewer" src="DhruvCV.pdf"></iframe>
+                    <div id="cv-loader" class="cv-loader">
+                        <i class="fas fa-spinner fa-spin"></i> Loading CV...
+                    </div>
+                </div>
+                <div class="cv-modal-footer">
+                    <a id="cv-download-current" class="btn cv-download-current-btn" download aria-label="Download current CV">
+                        <i class="fas fa-download"></i> Download Current CV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <p>&copy; 2025 Dhruv Goyal. All rights reserved.</p>

@@ -190,54 +190,145 @@ document.querySelectorAll('.contact-link').forEach(link => {
 // Initialize - Add loaded class for page load animation
 // ========================================
     // ========================================
-    // Simple CV Selector Download Handler
+    // CV Modal Viewer + Download Handler
     // ========================================
-    function initCVSelector() {
-        const downloadBtn = document.getElementById('download-cv-btn');
-        const select = document.getElementById('cv-type-select');
-        
-        if (!downloadBtn || !select) return;
-        
-        // Button toggles selector visibility only
+
+    function initCVModal() {
+        const viewBtn = document.getElementById('view-cv-btn');
+        const modal = document.getElementById('cv-modal');
+        const overlay = document.querySelector('.cv-modal-overlay');
+        const closeBtn = document.getElementById('cv-modal-close');
+        const cvRadios = document.querySelectorAll('input[name="cv-choice"]');
+        const viewer = document.getElementById('cv-viewer');
+        const downloadBtn = document.getElementById('cv-download-current');
+        const loader = document.getElementById('cv-loader');
+
+        if (!viewBtn || !modal) return;
+
+        let currentCV = 'DhruvCV.pdf'; // Default
+
+        // Open modal
+        viewBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentCV = 'DhruvCV.pdf';
+            document.getElementById('cv-general').checked = true;
+
+
+            viewer.src = currentCV + '#view=FitV&toolbar=0&navpanes=0&scrollbar=0';
+
+
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 1000);
+            modal.classList.add('active');
+            document.body.classList.add('cv-modal-open');
+            document.body.style.overflow = 'hidden';
+            // Delayed focus
+            setTimeout(() => {
+                document.getElementById('cv-general').focus();
+                console.log('CV radios count:', cvRadios.length, 'Current CV:', currentCV);
+            }, 150);
+        });
+
+
+        // Close handlers
+        const closeModal = () => {
+            modal.classList.remove('active');
+            document.body.classList.remove('cv-modal-open');
+            document.body.style.overflow = '';
+            viewer.src = ''; // Unload iframe
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay && !document.querySelector('input[name="cv-choice"]:checked')) closeModal();
+        });
+
+        // Keyboard: Esc close
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('active') && e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Toggle CV via radio buttons
+
+        cvRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                e.stopPropagation();
+                currentCV = e.target.value;
+                console.log('Selected CV:', currentCV);
+                viewer.src = currentCV + '#view=FitV&toolbar=0&navpanes=0&scrollbar=0';
+                loader.style.display = 'flex';
+                viewer.onload = () => loader.style.display = 'none';
+            });
+        });
+
+
+        // Prevent bubbling on radio labels too
+        ['click', 'focus'].forEach(event => {
+            cvRadios.forEach(radio => {
+                radio.addEventListener(event, e => e.stopPropagation(), true);
+            });
+        });
+
+        // Update download href
         downloadBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            select.classList.toggle('active');
-            select.focus();
+            const link = document.createElement('a');
+            link.href = currentCV;
+            link.download = currentCV.replace('.pdf', '').replace(/ /g, '_');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Feedback
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+            downloadBtn.style.background = '#10b981';
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.style.background = '';
+            }, 2000);
         });
-        
-        // Select → download only if valid CV selected + hide
-        select.addEventListener('change', () => {
-            const selectedCV = select.value;
-            if (selectedCV && selectedCV !== '') {  // Skip default empty value
-                const link = document.createElement('a');
-                link.href = selectedCV;
-                link.download = selectedCV.replace('.pdf', '');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // Feedback
-                const originalHTML = downloadBtn.innerHTML;
-                downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
-                downloadBtn.style.background = '#10b981';
-                setTimeout(() => {
-                    downloadBtn.innerHTML = originalHTML;
-                    downloadBtn.style.background = '';
-                }, 2000);
+
+        // Iframe load: Hide loader
+        viewer.addEventListener('load', () => {
+            loader.style.display = 'none';
+        });
+
+        // Focus trap for accessibility
+        modal.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                const focusable = modal.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
             }
-            select.classList.remove('active');
         });
-        
-        // Click outside → hide
-        document.addEventListener('click', (e) => {
-            if (!downloadBtn.contains(e.target) && !select.contains(e.target)) {
-                select.classList.remove('active');
+
+        // Initial focus on modal open
+        modal.addEventListener('transitionend', () => {
+            if (modal.classList.contains('active')) {
+                closeBtn.focus();
             }
         });
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', initCVSelector);
+    document.addEventListener('DOMContentLoaded', initCVModal);
 
 window.addEventListener('load', () => {
     document.body.classList.add('loaded');
