@@ -606,7 +606,6 @@
 
         const form = document.getElementById('contact-form');
         const messageDiv = document.getElementById('form-message');
-        const firstInput = document.getElementById('user_name');
 
         if (!form) return;
 
@@ -644,9 +643,6 @@
             }
         }
 
-        if (firstInput) {
-            firstInput.focus();
-        }
     }
 
     // Initialize contact form when DOM loads
