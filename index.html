@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dhruv Goyal | Portfolio</title>
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="styles.css-additions.css">
+    <!-- PWA Meta -->
+    <meta name="description" content="Dhruv Goyal - Data Science Enthusiast & ML Developer | Portfolio">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="data:application/manifest+json,{
+        "name": "Dhruv Goyal Portfolio",
+        "short_name": "DG Portfolio",
+        "start_url": ".",
+        "display": "standalone",
+        "background_color": "#0a0a0f",
+        "theme_color": "#6366f1",
+        "icons": [{
+            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjNjM2NmYxIi8+CjxwYXRoIGQ9Ik0xNCAxNDRIMTY4VjE2OEgxNFYxNDRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        }]
+    }">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -14,8 +33,11 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#home" class="logo">DG</a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme" aria-label="Toggle light/dark mode">
+                <i class="fas fa-moon"></i>
+            </button>
         <ul class="nav-links" role="menubar">
-                <li role="none"><a href="#home" role="menuitem" aria-current="page" when active><i class="fas fa-home"></i> Home</a></li>
+                <li role="none"><a href="#home" role="menuitem" aria-current="page"><i class="fas fa-home"></i> Home</a></li>
                 <li role="none"><a href="#about" role="menuitem"><i class="fas fa-user"></i> About</a></li>
                 <li role="none"><a href="#skills" role="menuitem"><i class="fas fa-code"></i> Skills</a></li>
                 <li role="none"><a href="#projects" role="menuitem"><i class="fas fa-project-diagram"></i> Projects</a></li>
@@ -35,6 +57,7 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <canvas id="particles-canvas"></canvas>
 <div class="hero-content">
             <div class="hero-main">
                 <div class="hero-text">
@@ -53,7 +76,9 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="Picture.png" alt="Dhruv Goyal - Profile Picture" class="profile-pic">
+                    <div class="hero-image-shell">
+                        <img src="IMG_4841.HEIC" alt="Dhruv Goyal - Profile Picture" class="profile-pic" onerror="this.onerror=null;this.src='Picture.png';">
+                    </div>
                 </div>
             </div>
             <div class="hero-social">
@@ -115,7 +140,7 @@
         <div class="container">
             <h2 class="section-title">Skills</h2>
             <div class="skills-grid">
-                <div class="skill-category">
+<div class="skill-category">
                     <h3><i class="fas fa-code"></i> Languages</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Python</span>
@@ -123,16 +148,53 @@
                         <span class="skill-tag">C</span>
                         <span class="skill-tag">C++</span>
                     </div>
+                    <div class="skill-progress-container">
+                        <div class="skill-progress-item">
+                            <div class="skill-progress-label">
+                                <span>Python</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" style="--progress: 90%;"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <div class="skill-progress-label">
+                                <span>Java</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" style="--progress: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="skill-category">
+<div class="skill-category">
                     <h3><i class="fas fa-layer-group"></i> Frameworks</h3>
                     <div class="skill-tags">
-                        <span class="skill-tag">HTML & CSS</span>
                         <span class="skill-tag">Scikit-learn</span>
                         <span class="skill-tag">Pandas</span>
                         <span class="skill-tag">NumPy</span>
-                        <span class="skill-tag">Matplotlib</span>
-                        <span class="skill-tag">Seaborn</span>
+                    </div>
+                    <div class="skill-progress-container">
+                        <div class="skill-progress-item">
+                            <div class="skill-progress-label">
+                                <span>Scikit-learn</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" style="--progress: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="skill-progress-item">
+                            <div class="skill-progress-label">
+                                <span>Pandas</span>
+                                <span>88%</span>
+                            </div>
+                            <div class="skill-progress-bar">
+                                <div class="skill-progress-fill" style="--progress: 88%;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="skill-category">
@@ -426,23 +488,67 @@
             <h2 class="section-title">Get In Touch</h2>
             <div class="contact-content">
                 <p class="contact-text">Feel free to reach out for collaborations, opportunities, or just a chat!</p>
-                <div class="contact-links">
-                    <a href="mailto:dhgoyal001@gmail.com" class="contact-link">
-                        <i class="fas fa-envelope"></i>
-                        <span>dhgoyal001@gmail.com</span>
-                    </a>
-                    <a href="tel:+916239813935" class="contact-link">
-                        <i class="fas fa-phone"></i>
-                        <span>+91-6239813935</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/dhruvthisside" target="_blank" class="contact-link">
-                        <i class="fab fa-linkedin"></i>
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="https://github.com/DhruvThisside" target="_blank" class="contact-link">
-                        <i class="fab fa-github"></i>
-                        <span>GitHub</span>
-                    </a>
+                <div class="contact-grid">
+                    <div class="contact-panel contact-message-panel">
+                        <div class="contact-panel-header">
+                            <h3>Direct Message</h3>
+                            <p>Send a quick message without leaving the page.</p>
+                        </div>
+                        <form id="contact-form" class="contact-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="user_name">Your Name</label>
+                                    <input type="text" id="user_name" name="user_name" autocomplete="name" placeholder="Your Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user_email">Email Address</label>
+                                    <input type="email" id="user_email" name="user_email" autocomplete="email" placeholder="your@email.com" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_subject">Subject</label>
+                                <input type="text" id="user_subject" name="user_subject" placeholder="What would you like to discuss?">
+                            </div>
+                            <div class="form-group">
+                                <label for="user_message">Message</label>
+                                <textarea id="user_message" name="message" placeholder="Write your message here..." rows="6" required></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary submit-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Send Message
+                                </button>
+                            </div>
+                            <div id="form-message" class="form-message hidden" aria-live="polite"></div>
+                        </form>
+                    </div>
+                    <div class="contact-panel contact-links-panel">
+                        <div class="contact-panel-header">
+                            <h3>Reach Out Directly</h3>
+                            <p>Prefer email, phone, or social? Use any of these contact options.</p>
+                        </div>
+                        <div class="contact-profile-wrap">
+                            <img src="Picture.png" alt="Dhruv Goyal profile picture" class="contact-profile-pic">
+                        </div>
+                        <div class="contact-links">
+                            <a href="mailto:dhgoyal001@gmail.com" class="contact-link">
+                                <i class="fas fa-envelope"></i>
+                                <span>dhgoyal001@gmail.com</span>
+                            </a>
+                            <a href="tel:+916239813935" class="contact-link">
+                                <i class="fas fa-phone"></i>
+                                <span>+91-6239813935</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/dhruvthisside" target="_blank" class="contact-link">
+                                <i class="fab fa-linkedin"></i>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/DhruvThisside" target="_blank" class="contact-link">
+                                <i class="fab fa-github"></i>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -450,35 +556,35 @@
 
     <!-- Footer -->
     <!-- CV Viewer Modal -->
-    <div id="cv-modal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title" tabindex="-1">
+    <div id="cv-modal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title" aria-describedby="cv-modal-description" tabindex="-1">
         <div class="cv-modal-overlay" aria-label="Close modal">
             <div class="cv-modal-content">
                 <div class="cv-modal-header">
-                    <h2 id="cv-modal-title" class="cv-modal-title">View CV</h2>
+                    <div class="cv-modal-heading">
+                        <h2 id="cv-modal-title" class="cv-modal-title">View CV</h2>
+                    </div>
                     <button id="cv-modal-close" class="cv-modal-close" aria-label="Close CV modal">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="cv-toggle-group">
-                    <input type="radio" id="cv-general" name="cv-choice" value="DhruvCV.pdf" checked>
-                    <label for="cv-general" class="cv-toggle-btn">
-                        <i class="fas fa-file-alt"></i> General CV
+                <div class="cv-modal-toolbar">
+                    <label class="cv-select-wrap" for="cv-select">
+                        <i class="fas fa-file-alt"></i>
+                        <select id="cv-select" class="cv-select" aria-label="Select CV version">
+                            <option value="DhruvCV.pdf" selected>General CV</option>
+                            <option value="Dhruv SpCV.pdf">Specialized CV</option>
+                        </select>
                     </label>
-                    <input type="radio" id="cv-special" name="cv-choice" value="Dhruv SpCV.pdf">
-                    <label for="cv-special" class="cv-toggle-btn">
-                        <i class="fas fa-file-special"></i> Specialized CV
-                    </label>
+                    <a id="cv-download-current" class="btn cv-download-current-btn" href="DhruvCV.pdf" download aria-label="Download current CV">
+                        <i class="fas fa-download"></i> Download CV
+                    </a>
                 </div>
                 <div class="cv-viewer-container">
-                    <iframe id="cv-viewer" class="cv-viewer-frame" title="CV Viewer" src="DhruvCV.pdf"></iframe>
-                    <div id="cv-loader" class="cv-loader">
+                    <div id="cv-pdf-pages" class="cv-pdf-pages" aria-label="CV document preview"></div>
+                    <iframe id="cv-viewer-fallback" class="cv-viewer-fallback" title="CV preview fallback"></iframe>
+                    <div id="cv-loader" class="cv-loader" aria-live="polite">
                         <i class="fas fa-spinner fa-spin"></i> Loading CV...
                     </div>
-                </div>
-                <div class="cv-modal-footer">
-                    <a id="cv-download-current" class="btn cv-download-current-btn" download aria-label="Download current CV">
-                        <i class="fas fa-download"></i> Download Current CV
-                    </a>
                 </div>
             </div>
         </div>
@@ -491,6 +597,9 @@
         </div>
     </footer>
 
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
