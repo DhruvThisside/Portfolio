@@ -350,18 +350,26 @@
         const overlay = document.querySelector('.cv-modal-overlay');
         const closeBtn = document.getElementById('cv-modal-close');
         const cvSelect = document.getElementById('cv-select');
+        const zoomOutBtn = document.getElementById('cv-zoom-out');
+        const zoomInBtn = document.getElementById('cv-zoom-in');
+        const zoomLevelText = document.getElementById('cv-zoom-level');
         const pdfPages = document.getElementById('cv-pdf-pages');
         const fallbackViewer = document.getElementById('cv-viewer-fallback');
         const viewerContainer = document.querySelector('.cv-viewer-container');
         const downloadBtn = document.getElementById('cv-download-current');
         const loader = document.getElementById('cv-loader');
 
-        if (!viewBtn || !modal || !pdfPages || !fallbackViewer || !viewerContainer) return;
+        if (!viewBtn || !modal || !pdfPages || !fallbackViewer || !viewerContainer || !zoomOutBtn || !zoomInBtn || !zoomLevelText) return;
 
         let currentCV = 'DhruvCV.pdf';
         let lastFocusedElement = null;
         let currentRenderToken = 0;
-        const hasPdfJs = Boolean(window.pdfjsLib);
+        let zoomPercent = 80;
+        const ZOOM_MIN = 50;
+        const ZOOM_MAX = 150;
+        const ZOOM_STEP = 5;
+        let pdfJsReady = Boolean(window.pdfjsLib);
+        let pdfJsLoadingPromise = null;
 
         const setLoader = (isLoading) => {
             loader.style.display = isLoading ? 'flex' : 'none';
@@ -378,6 +386,72 @@
 
         const getSelectedLabel = () => cvSelect.options[cvSelect.selectedIndex].text;
 
+        const updateZoomUI = () => {
+            zoomLevelText.textContent = `${zoomPercent}%`;
+            zoomOutBtn.disabled = zoomPercent <= ZOOM_MIN;
+            zoomInBtn.disabled = zoomPercent >= ZOOM_MAX;
+        };
+
+        const ensurePdfJsLoaded = async () => {
+            if (window.pdfjsLib) {
+                pdfJsReady = true;
+                return true;
+            }
+
+            if (pdfJsLoadingPromise) {
+                return pdfJsLoadingPromise;
+            }
+
+            const sources = [
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js',
+                'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.8.69/build/pdf.min.js'
+            ];
+
+            pdfJsLoadingPromise = (async () => {
+                for (const src of sources) {
+                    try {
+                        await new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.async = true;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+
+                        if (window.pdfjsLib) {
+                            pdfJsReady = true;
+                            return true;
+                        }
+                    } catch (error) {
+                        // Try the next CDN source.
+                    }
+                }
+
+                pdfJsReady = false;
+                return false;
+            })();
+
+            const result = await pdfJsLoadingPromise;
+            pdfJsLoadingPromise = null;
+            return result;
+        };
+
+        const applyZoom = () => {
+            const pages = pdfPages.querySelectorAll('.cv-pdf-page');
+            const zoomRatio = zoomPercent / 100;
+            const isZoomedIn = zoomPercent > 100;
+
+            pdfPages.style.alignItems = isZoomedIn ? 'flex-start' : 'center';
+
+            pages.forEach((page) => {
+                page.style.width = `${zoomPercent}%`;
+                page.style.maxWidth = 'none';
+                page.style.marginLeft = isZoomedIn ? '0' : 'auto';
+                page.style.marginRight = isZoomedIn ? '0' : 'auto';
+            });
+        };
+
         const renderPdf = async (file) => {
             const renderToken = ++currentRenderToken;
             setLoader(true);
@@ -388,10 +462,12 @@
             fallbackViewer.src = '';
             viewerContainer.scrollTop = 0;
 
+            const hasPdfJs = await ensurePdfJsLoaded();
+
             if (!hasPdfJs) {
                 pdfPages.style.display = 'none';
                 fallbackViewer.style.display = 'block';
-                fallbackViewer.src = `${file}#toolbar=0&navpanes=0&statusbar=0&messages=0&scrollbar=1&page=1&zoom=page-width`;
+                fallbackViewer.src = `${file}#toolbar=0&navpanes=0&statusbar=0&messages=0&scrollbar=1&page=1&zoom=${zoomPercent}`;
                 setLoader(false);
                 return;
             }
@@ -426,8 +502,8 @@
                     }
 
                     const unscaledViewport = page.getViewport({ scale: 1 });
-                    const containerWidth = pdfPages.clientWidth || viewerContainer.clientWidth || 1;
-                    const availableWidth = Math.max(containerWidth - 12, 1);
+                    const containerWidth = viewerContainer.clientWidth || pdfPages.clientWidth || 1;
+                    const availableWidth = Math.max(containerWidth, 1);
                     const scale = availableWidth / unscaledViewport.width;
                     const viewport = page.getViewport({ scale });
 
@@ -435,26 +511,25 @@
                     pageShell.className = 'cv-pdf-page';
 
                     let cropTop = 0;
-                    let cropBottom = 0;
-                    let minContentTop = viewport.height;
-                    let maxContentBottom = 0;
+                    if (pageNumber === 1) {
+                        let minContentTop = viewport.height;
 
-                    textItems.forEach((item) => {
-                        const transformed = window.pdfjsLib.Util.transform(viewport.transform, item.transform);
-                        const fontHeight = Math.max(12, Math.hypot(transformed[2], transformed[3]));
-                        const itemTop = transformed[5] - fontHeight;
-                        const itemBottom = transformed[5] + fontHeight * 0.35;
+                        textItems.forEach((item) => {
+                            const transformed = window.pdfjsLib.Util.transform(viewport.transform, item.transform);
+                            const fontHeight = Math.max(12, Math.hypot(transformed[2], transformed[3]));
+                            const itemTop = transformed[5] - fontHeight;
+                            minContentTop = Math.min(minContentTop, itemTop);
+                        });
 
-                        minContentTop = Math.min(minContentTop, itemTop);
-                        maxContentBottom = Math.max(maxContentBottom, itemBottom);
-                    });
-
-                    if (Number.isFinite(minContentTop) && Number.isFinite(maxContentBottom)) {
-                        cropTop = Math.max(0, Math.floor(minContentTop - 24));
-                        cropBottom = Math.max(0, Math.floor(viewport.height - maxContentBottom - 24));
+                        if (Number.isFinite(minContentTop)) {
+                            cropTop = Math.min(
+                                Math.max(0, Math.floor(minContentTop - 24)),
+                                Math.floor(viewport.height * 0.18)
+                            );
+                        }
                     }
 
-                    const visibleHeight = Math.max(1, Math.floor(viewport.height - cropTop - cropBottom));
+                    const visibleHeight = Math.max(1, Math.floor(viewport.height - cropTop));
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d', { alpha: false });
                     const outputScale = window.devicePixelRatio || 1;
@@ -475,6 +550,8 @@
                         viewport
                     }).promise;
                 }
+
+                applyZoom();
             } catch (error) {
                 if (renderToken === currentRenderToken) {
                     pdfPages.innerHTML = '<div class="cv-pdf-page" style="padding: 2rem; color: var(--text-secondary); text-align: center;">Unable to load CV preview.</div>';
@@ -491,6 +568,7 @@
             currentCV = file;
             cvSelect.value = file;
             updateActionLinks(currentCV, getSelectedLabel());
+            updateZoomUI();
             await renderPdf(currentCV);
 
             if (shouldFocus) {
@@ -501,6 +579,8 @@
         viewBtn.addEventListener('click', (e) => {
             e.preventDefault();
             lastFocusedElement = document.activeElement;
+            zoomPercent = 80;
+            updateZoomUI();
             modal.classList.add('active');
             document.body.classList.add('cv-modal-open');
             setActiveCV('DhruvCV.pdf', true);
@@ -540,6 +620,26 @@
             await setActiveCV(e.target.value);
         });
 
+        zoomOutBtn.addEventListener('click', async () => {
+            zoomPercent = Math.max(ZOOM_MIN, zoomPercent - ZOOM_STEP);
+            updateZoomUI();
+            if (pdfJsReady && pdfPages.children.length > 0 && fallbackViewer.style.display !== 'block') {
+                applyZoom();
+            } else {
+                await renderPdf(currentCV);
+            }
+        });
+
+        zoomInBtn.addEventListener('click', async () => {
+            zoomPercent = Math.min(ZOOM_MAX, zoomPercent + ZOOM_STEP);
+            updateZoomUI();
+            if (pdfJsReady && pdfPages.children.length > 0 && fallbackViewer.style.display !== 'block') {
+                applyZoom();
+            } else {
+                await renderPdf(currentCV);
+            }
+        });
+
         downloadBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const link = document.createElement('a');
@@ -567,6 +667,8 @@
                 setActiveCV(currentCV);
             }, 180);
         });
+
+        updateZoomUI();
 
         modal.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {

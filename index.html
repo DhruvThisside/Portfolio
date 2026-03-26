@@ -575,6 +575,15 @@
                             <option value="Dhruv SpCV.pdf">Specialized CV</option>
                         </select>
                     </label>
+                    <div class="cv-zoom-controls" aria-label="Zoom controls">
+                        <button type="button" id="cv-zoom-out" class="cv-zoom-btn" aria-label="Zoom out">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span id="cv-zoom-level" class="cv-zoom-level" aria-live="polite">100%</span>
+                        <button type="button" id="cv-zoom-in" class="cv-zoom-btn" aria-label="Zoom in">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                     <a id="cv-download-current" class="btn cv-download-current-btn" href="DhruvCV.pdf" download aria-label="Download current CV">
                         <i class="fas fa-download"></i> Download CV
                     </a>
@@ -599,7 +608,6 @@
 
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
