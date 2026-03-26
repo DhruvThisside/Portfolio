@@ -32,10 +32,19 @@
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
+            const navbar = document.querySelector('.navbar');
+
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                const navbarHeight = navbar ? navbar.offsetHeight : 0;
+                const sectionHeading = target.querySelector('.section-title');
+                const anchorElement = sectionHeading || target;
+                const anchorTop = window.scrollY + anchorElement.getBoundingClientRect().top;
+                const headingOffset = 24;
+                const maxScrollTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+                window.scrollTo({
+                    top: Math.min(Math.max(0, anchorTop - navbarHeight - headingOffset), maxScrollTop),
+                    behavior: 'smooth'
                 });
             }
         });

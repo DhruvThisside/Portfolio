@@ -152,6 +152,7 @@ section[id] {
     transition: var(--transition);
     backdrop-filter: blur(20px);
     position: relative;
+    flex-shrink: 0;
 }
 
 .theme-toggle:hover {
@@ -184,7 +185,6 @@ section[id] {
     margin: 0 auto;
     padding: 0 var(--container-padding);
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 1rem;
 }
@@ -206,6 +206,7 @@ section[id] {
     gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
+    flex: 1 1 auto;
 }
 
 .nav-links li a {
@@ -1552,6 +1553,7 @@ footer .fa-heart {
 
     .nav-links {
         display: none;
+        flex: initial;
     }
     
     .hamburger {
